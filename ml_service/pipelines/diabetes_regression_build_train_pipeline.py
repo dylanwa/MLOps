@@ -82,7 +82,7 @@ def main():
         print("DataStore:")
         print(datastore)
     except Exception:
-        datatstore = Datastore.register_azure_blob_container(
+        datastore = Datastore.register_azure_blob_container(
             workspace=aml_workspace,
             datastore_name=blob_datastore_name,
             container_name=container_name,
@@ -107,7 +107,7 @@ def main():
             )  # NOQA: E501
 
         target_path = "training-data/"
-        datatstore.upload_files(
+        datastore.upload_files(
             files=[file_name],
             target_path=target_path,
             overwrite=True,
@@ -117,7 +117,7 @@ def main():
         # Register dataset
         path_on_datastore = os.path.join(target_path, file_name)
         dataset = Dataset.Tabular.from_delimited_files(
-            path=(datatstore, path_on_datastore)
+            path=(datastore, path_on_datastore)
         )
         dataset = dataset.register(
             workspace=aml_workspace,
@@ -128,7 +128,7 @@ def main():
         )
 
     # Create a PipelineData to pass data between steps
-    pipeline_data = PipelineData("pipeline_data", datastore=datatstore)
+    pipeline_data = PipelineData("pipeline_data", datastore=datastore)
 
     print(f"e.train_script_path: {e.train_script_path}")
 
