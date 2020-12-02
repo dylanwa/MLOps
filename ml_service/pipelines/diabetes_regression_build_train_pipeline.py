@@ -47,14 +47,18 @@ def main():
         "DATASTORE_NAME"
     ] = datastore_name  # NOQA: E501
 
-    model_name_param = PipelineParameter(name="model_name", default_value=e.model_name)  # NOQA: E501
+    model_name_param = PipelineParameter(
+        name="model_name", default_value=e.model_name
+    )  # NOQA: E501
     dataset_version_param = PipelineParameter(
         name="dataset_version", default_value=e.dataset_version
     )
     data_file_path_param = PipelineParameter(
         name="data_file_path", default_value="none"
     )
-    caller_run_id_param = PipelineParameter(name="caller_run_id", default_value="none")  # NOQA: E501
+    caller_run_id_param = PipelineParameter(
+        name="caller_run_id", default_value="none"
+    )  # NOQA: E501
 
     # Get dataset name
     dataset_name = e.dataset_name
@@ -80,19 +84,28 @@ def main():
         print("DataStore:")
         print(datatstore)
 
-        blob_datastore_name='azblobsdk' # Name of the datastore to workspace
-        container_name=os.getenv("BLOB_CONTAINER", "azureml-blobstore-8c73de20-38b9-4ba7-b66d-0f8a2e4dabd0") # Name of Azure blob container
-        account_name=os.getenv("BLOB_ACCOUNTNAME", e.BLOB_ACCOUNTNAME) # Storage account name
-        account_key=os.getenv("BLOB_ACCOUNT_KEY", e.BLOB_ACCOUNT_KEY) # Storage account access key
+        blob_datastore_name = "azblobsdk"  # Name of the datastore to workspace
+        container_name = os.getenv(
+            "BLOB_CONTAINER",
+            "azureml-blobstore-8c73de20-38b9-4ba7-b66d-0f8a2e4dabd0"
+        )  # Name of Azure blob container
+        account_name = os.getenv(
+            "BLOB_ACCOUNTNAME", e.BLOB_ACCOUNTNAME
+        )  # Storage account name
+        account_key = os.getenv(
+            "BLOB_ACCOUNT_KEY", e.BLOB_ACCOUNT_KEY
+        )  # Storage account access key
         print(f"BLOB_ACCOUNTNAME: {e.BLOB_ACCOUNTNAME}")
-        blob_datastore = Datastore.register_azure_blob_container(workspace=aml_workspace, 
-                                                                datastore_name=blob_datastore_name, 
-                                                                container_name=container_name, 
-                                                                account_name=account_name,
-                                                                account_key=account_key)
+        datatstore = Datastore.register_azure_blob_container(
+            workspace=aml_workspace,
+            datastore_name=blob_datastore_name,
+            container_name=container_name,
+            account_name=account_name,
+            account_key=account_key,
+        )
 
         target_path = "training-data/"
-        blob_datastore.upload_files(
+        datatstore.upload_files(
             files=[file_name],
             target_path=target_path,
             overwrite=True,
@@ -164,7 +177,12 @@ def main():
         compute_target=aml_compute,
         source_directory=e.sources_directory_train,
         inputs=[pipeline_data],
-        arguments=["--model_name", model_name_param, "--step_input", pipeline_data, ],  # NOQA: E501
+        arguments=[
+            "--model_name",
+            model_name_param,
+            "--step_input",
+            pipeline_data,
+        ],  # NOQA: E501
         runconfig=run_config,
         allow_reuse=False,
     )
