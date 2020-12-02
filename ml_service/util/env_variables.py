@@ -91,6 +91,8 @@ class Env:
     scoring_datastore_storage_name: Optional[str] = os.environ.get(
         "SCORING_DATASTORE_STORAGE_NAME"
     )
+    BLOB_ACCOUNTNAME: Optional[str] = os.environ.get("BLOB_ACCOUNTNAME")
+    BLOB_ACCOUNT_KEY: Optional[str] = os.environ.get("BLOB_ACCOUNT_KEY")
     scoring_datastore_access_key: Optional[str] = os.environ.get(
         "SCORING_DATASTORE_ACCESS_KEY"
     )

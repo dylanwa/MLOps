@@ -79,8 +79,20 @@ def main():
         datatstore = Datastore.get(aml_workspace, datastore_name)
         print("DataStore:")
         print(datatstore)
+
+        blob_datastore_name='azblobsdk' # Name of the datastore to workspace
+        container_name=os.getenv("BLOB_CONTAINER", "azureml-blobstore-8c73de20-38b9-4ba7-b66d-0f8a2e4dabd0") # Name of Azure blob container
+        account_name=os.getenv("BLOB_ACCOUNTNAME", e.BLOB_ACCOUNTNAME) # Storage account name
+        account_key=os.getenv("BLOB_ACCOUNT_KEY", e.BLOB_ACCOUNT_KEY) # Storage account access key
+        print(f"BLOB_ACCOUNTNAME: {e.BLOB_ACCOUNTNAME}")
+        blob_datastore = Datastore.register_azure_blob_container(workspace=aml_workspace, 
+                                                                datastore_name=blob_datastore_name, 
+                                                                container_name=container_name, 
+                                                                account_name=account_name,
+                                                                account_key=account_key)
+
         target_path = "training-data/"
-        datatstore.upload_files(
+        blob_datastore.upload_files(
             files=[file_name],
             target_path=target_path,
             overwrite=True,
