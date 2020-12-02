@@ -41,11 +41,38 @@ def main():
         datastore_name = e.datastore_name
         print(f"e.datastore_name: {datastore_name}")
     else:
-        datastore_name = aml_workspace.get_default_datastore().name
-        print(f"default datastore_name: {datastore_name}")
+        datastore_name = 'azblobsdk'
+        print(f"use hardcoded datastore_name: {datastore_name}")
     run_config.environment.environment_variables[
         "DATASTORE_NAME"
     ] = datastore_name  # NOQA: E501
+
+    # Upload file to a datastore in workspace
+    datastore_name = "azblobsdk"  # Name of the datastore to workspace
+    container_name = os.getenv(
+        "BLOB_CONTAINER",
+        "azureml-blobstore-8c73de20-38b9-4ba7-b66d-0f8a2e4dabd0"
+    )  # Name of Azure blob container
+    account_name = os.getenv(
+        "BLOB_ACCOUNTNAME", e.BLOB_ACCOUNTNAME
+    )  # Storage account name
+    account_key = os.getenv(
+        "BLOB_ACCOUNT_KEY", e.BLOB_ACCOUNT_KEY
+    )  # Storage account access key
+    print(f"BLOB_ACCOUNTNAME: {e.BLOB_ACCOUNTNAME}")
+
+    try:
+        datastore = Datastore.get(aml_workspace, datastore_name)
+        print("DataStore:")
+        print(datastore)
+    except Exception:
+        datastore = Datastore.register_azure_blob_container(
+            workspace=aml_workspace,
+            datastore_name=datastore_name,
+            container_name=container_name,
+            account_name=account_name,
+            account_key=account_key,
+        )
 
     model_name_param = PipelineParameter(
         name="model_name", default_value=e.model_name
@@ -62,33 +89,6 @@ def main():
 
     # Get dataset name
     dataset_name = e.dataset_name
-
-    # Upload file to a datastore in workspace
-    blob_datastore_name = "azblobsdk"  # Name of the datastore to workspace
-    container_name = os.getenv(
-        "BLOB_CONTAINER",
-        "azureml-blobstore-8c73de20-38b9-4ba7-b66d-0f8a2e4dabd0"
-    )  # Name of Azure blob container
-    account_name = os.getenv(
-        "BLOB_ACCOUNTNAME", e.BLOB_ACCOUNTNAME
-    )  # Storage account name
-    account_key = os.getenv(
-        "BLOB_ACCOUNT_KEY", e.BLOB_ACCOUNT_KEY
-    )  # Storage account access key
-    print(f"BLOB_ACCOUNTNAME: {e.BLOB_ACCOUNTNAME}")
-
-    try:
-        datastore = Datastore.get(aml_workspace, blob_datastore_name)
-        print("DataStore:")
-        print(datastore)
-    except Exception:
-        datastore = Datastore.register_azure_blob_container(
-            workspace=aml_workspace,
-            datastore_name=blob_datastore_name,
-            container_name=container_name,
-            account_name=account_name,
-            account_key=account_key,
-        )
 
     # Check to see if dataset exists
     if dataset_name not in aml_workspace.datasets:
