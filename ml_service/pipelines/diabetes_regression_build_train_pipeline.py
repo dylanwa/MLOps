@@ -43,9 +43,15 @@ def main():
     else:
         datastore_name = 'azblobsdk'
         print(f"use hardcoded datastore_name: {datastore_name}")
+
     run_config.environment.environment_variables[
         "DATASTORE_NAME"
     ] = datastore_name  # NOQA: E501
+
+    print("run_config envir DATASOTRE_NAME:")
+    print(run_config.environment.environment_variables[
+        "DATASTORE_NAME"
+    ])
 
     # Upload file to a datastore in workspace
     container_name = os.getenv(
