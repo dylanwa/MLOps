@@ -48,7 +48,6 @@ def main():
     ] = datastore_name  # NOQA: E501
 
     # Upload file to a datastore in workspace
-    datastore_name = "azblobsdk"  # Name of the datastore to workspace
     container_name = os.getenv(
         "BLOB_CONTAINER",
         "azureml-blobstore-8c73de20-38b9-4ba7-b66d-0f8a2e4dabd0"
