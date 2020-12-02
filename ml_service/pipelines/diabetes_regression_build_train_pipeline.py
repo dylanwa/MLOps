@@ -76,15 +76,19 @@ def main():
         "BLOB_ACCOUNT_KEY", e.BLOB_ACCOUNT_KEY
     )  # Storage account access key
     print(f"BLOB_ACCOUNTNAME: {e.BLOB_ACCOUNTNAME}")
-    datatstore = Datastore.register_azure_blob_container(
-        workspace=aml_workspace,
-        datastore_name=blob_datastore_name,
-        container_name=container_name,
-        account_name=account_name,
-        account_key=account_key,
-    )
-    print("DataStore:")
-    print(datatstore)
+
+    try:
+        datastore = Datastore.get(aml_workspace, blob_datastore_name)
+        print("DataStore:")
+        print(datastore)
+    except Exception:
+        datatstore = Datastore.register_azure_blob_container(
+            workspace=aml_workspace,
+            datastore_name=blob_datastore_name,
+            container_name=container_name,
+            account_name=account_name,
+            account_key=account_key,
+        )
 
     # Check to see if dataset exists
     if dataset_name not in aml_workspace.datasets:
